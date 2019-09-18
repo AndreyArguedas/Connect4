@@ -22,6 +22,15 @@ class Platform {
     )
   }
 
+  existsNeighborAtBottom(row, col) {
+    if(col >= this.platform.length) {
+      return false;
+    }
+    else {
+      return !(this.platform[row][col + 1] === null);
+    }
+  }
+
   showEmptySpace(row, col) {
     let { r, g, b } = this.color
     fill(255) //Change
