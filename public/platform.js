@@ -23,12 +23,18 @@ class Platform {
   }
 
   existsNeighborAtBottom(row, col) {
-    if(col >= this.platform.length) {
+    if(row < 0 || col < 0)
+      return false;
+    if (row >= this.platform.length || col >= this.platform.length) {
       return false;
     }
     else {
       return !(this.platform[row][col + 1] === null);
     }
+  }
+
+  isSpaceEmpty(row, col) {
+    return this.platform[row][col] === null;
   }
 
   showEmptySpace(row, col) {

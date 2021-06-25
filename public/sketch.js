@@ -50,7 +50,7 @@ let movementOfPiece = p => {
 let putPieceOnPlatfrom = (piece, platform) => {
   let mapX = map(piece.x, 0, width, 0, rows)
   let mapY = map(piece.y, 0, height, 0, cols)
-  if (floor(mapY) === rows - 1 || platform.existsNeighborAtBottom(floor(mapX), floor(mapY))) {
+  if ((floor(mapY) === rows - 1 && floor(mapX) === cols - 1) || platform.existsNeighborAtBottom(floor(mapX), floor(mapY)) && platform.isSpaceEmpty(floor(mapX), floor(mapY))) {
     platform.platform[floor(mapX)][floor(mapY)] = new Piece(piece.x, piece.y, piece.diameter, piece.color)
     currentPlayer.hasTurn = false
     if(currentPlayer === player2){
