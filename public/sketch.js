@@ -5,20 +5,41 @@ const rows = 7
 const cols = 7
 const platforMargin = 1.7
 
-let piece = new Piece(xwidth / 2, yheight / 2, diameter, {r: 250, g: 10, b: 0})
+let piece = new Piece(xwidth / 2, yheight / 2, diameter, { r: 250, g: 250, b: 10 })
 
 let platform = new Platform(rows, cols, 0, 0, diameter, { r: 0, g: 0, b: 0 }, platforMargin)
+
+let player1 = new Player(0, { r: 250, g: 250, b: 10 }, true, [])
+
+let player2 = new Player(1, { r: 250, g: 10, b: 10 }, false, [])
+
+let currentPlayer = null
 
 function setup() {
   let canv = createCanvas(xwidth, yheight)
   canv.position(300, 100)
+  givePieces(player1, rows * cols)
+  givePieces(player2, rows * cols)
 }
 
 function draw() {
   background(0, 0, 255)
   platform.show()
+  currentPlayer = defineCurrentPlayer(player1, player2)
+  piece = currentPlayer.getCurrentPiece()
   piece.show()
+  textSize(32)
+  text('Player' + currentPlayer.id, 10, 30)
   movementOfPiece(piece)
+}
+
+let givePieces = (player, amount) => {
+  let range = [...Array(amount).keys()]
+  player.pieces = range.map(e => new Piece(width / 2, height / 2, diameter, player.color))
+}
+
+let defineCurrentPlayer = (p1, p2) => {
+  return p1.hasTurn ? p1 : p2
 }
 
 let movementOfPiece = p => {
@@ -31,6 +52,10 @@ let putPieceOnPlatfrom = (piece, platform) => {
   let mapY = map(piece.y, 0, height, 0, cols)
   if (floor(mapY) === rows - 1 || platform.existsNeighborAtBottom(floor(mapX), floor(mapY))) {
     platform.platform[floor(mapX)][floor(mapY)] = new Piece(piece.x, piece.y, piece.diameter, piece.color)
+    currentPlayer.hasTurn = false
+    if(currentPlayer === player2){
+      player1.hasTurn = true
+    }
   }
   
 }
