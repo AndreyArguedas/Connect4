@@ -16,10 +16,14 @@ let player2 = new Player(1, { r: 250, g: 10, b: 10 }, false, [])
 let currentPlayer = null
 
 function setup() {
+  let socket = io.connect('http://localhost:9090');
   let canv = createCanvas(xwidth, yheight)
   canv.position(300, 100)
   givePieces(player1, rows * cols)
   givePieces(player2, rows * cols)
+
+  //Starts the game
+  socket.emit('start', {});
 }
 
 function draw() {

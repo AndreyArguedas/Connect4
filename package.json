@@ -13,10 +13,12 @@
   "keywords": [
     "connect4",
     "web",
-    "game"
+    "game",
+    "socket"
   ],
   "dependencies": {
-    "express": "^4.14.1"
+    "express": "^4.14.1",
+    "socket.io": "^4.1.2"
   },
   "author": "Andrey Arguedas",
   "license": "ISC",
