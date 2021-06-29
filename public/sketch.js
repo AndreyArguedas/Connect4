@@ -23,7 +23,7 @@ function setup() {
   givePieces(player2, rows * cols)
 
   //Starts the game
-  socket.emit('start', {});
+  socket.emit('start', player1);
 }
 
 function draw() {

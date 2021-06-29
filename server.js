@@ -18,12 +18,22 @@ const server = http.createServer(app);
 
 let io = socket(server);
 
+let connections = [];
+
 io.on("connection", (socket) => {
-  console.log("Welcome welcome");
+  console.log("Welcome welcome, someone has entered the server");
+
+  connections.push(socket);
 
   socket.on('start', function (data) {
-    console.log("Ok empezemos")
+    console.log("The player that just arrived is", data.id);
   });
+
+
+  socket.on('disconnect', () => {
+		connections.splice(connections.indexOf(socket), 1);
+		console.log("Someone, has been disconnected");
+	});
 
 });
 
