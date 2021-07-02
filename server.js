@@ -20,14 +20,22 @@ let io = socket(server);
 
 let connections = [];
 
+let rooms = [];
+
 io.on("connection", (socket) => {
   console.log("Welcome welcome, someone has entered the server");
 
+  console.log("Socket", socket.id);
+
   connections.push(socket);
 
-  socket.on('start', function (data) {
-    console.log("The player that just arrived is", data.id);
-  });
+  console.log("Rooms", socket.rooms);
+
+  console.log(Math.ceil(connections.length / 2));
+
+  socket.join('Room-' + Math.ceil(connections.length / 2));
+
+  io.to('Room-'+ Math.ceil(connections.length / 2)).emit('roomAssigned', 'Room-'+ Math.ceil(connections.length / 2));
 
 
   socket.on('disconnect', () => {
