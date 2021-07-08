@@ -3,6 +3,8 @@ const path = require("path");
 const http = require("http");
 const socket = require('socket.io');
 
+const RoomManager = require("./roomManager");
+
 const port = process.env.PORT || 9090;
 const app = express();
 
@@ -20,7 +22,7 @@ let io = socket(server);
 
 let connections = [];
 
-let rooms = [];
+let serverRoomManager  = new RoomManager();
 
 io.on("connection", (socket) => {
   console.log("Welcome welcome, someone has entered the server");
@@ -29,7 +31,7 @@ io.on("connection", (socket) => {
 
   connections.push(socket);
 
-  //RoomManager.assignRoom()
+  serverRoomManager.assignRoom();
 
   socket.join('Room-' + Math.ceil(connections.length / 2));
 
