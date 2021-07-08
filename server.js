@@ -25,22 +25,20 @@ let rooms = [];
 io.on("connection", (socket) => {
   console.log("Welcome welcome, someone has entered the server");
 
-  console.log("Socket", socket.id);
+  console.log("Socket id :", socket.id, "has entered");
 
   connections.push(socket);
 
-  console.log("Rooms", socket.rooms);
-
-  console.log(Math.ceil(connections.length / 2));
+  //RoomManager.assignRoom()
 
   socket.join('Room-' + Math.ceil(connections.length / 2));
 
   io.to('Room-'+ Math.ceil(connections.length / 2)).emit('roomAssigned', 'Room-'+ Math.ceil(connections.length / 2));
 
-
+  
   socket.on('disconnect', () => {
 		connections.splice(connections.indexOf(socket), 1);
-		console.log("Someone, has been disconnected");
+		console.log("The user with socket id :", socket.id, "has disconnected");
 	});
 
 });

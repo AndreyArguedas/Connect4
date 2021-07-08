@@ -15,27 +15,17 @@ let player2 = new Player(1, { r: 250, g: 10, b: 10 }, false, [])
 
 let currentPlayer = null
 
-/*io.on("roomAssigned", (...args) => {
-  console.log("Your room is" , args)
-});*/
-
 function setup() {
-  let socket = io.connect("http://localhost:9090/");
+  let socket = io.connect();
 
   socket.on("roomAssigned", (...args) => {
-    console.log("Your room is" , args)
-
-    //socket.to("Room-1").emit('roomMessage', "Hola compas soy" + socket.id);
-
-
+    console.log("Your room is" , args, "and someone has been added to this room");
   });
-
-  
 
   let canv = createCanvas(xwidth, yheight)
   canv.position(300, 100)
   givePieces(player1, rows * cols)
-  givePieces(player2, rows * cols)
+  //givePieces(player2, rows * cols)
 
   //Starts the game
   
