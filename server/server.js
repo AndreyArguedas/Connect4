@@ -31,16 +31,20 @@ io.on("connection", (socket) => {
 
   connections.push(socket);
 
-  serverRoomManager.assignRoom();
+  // Get the Room Available
+  let assignedRoom = serverRoomManager.assignRoom(socket);
 
-  socket.join('Room-' + Math.ceil(connections.length / 2));
+  // Add the socket to the room
+  socket.join(assignedRoom.getRoomName());
 
-  io.to('Room-'+ Math.ceil(connections.length / 2)).emit('roomAssigned', 'Room-'+ Math.ceil(connections.length / 2));
+  //Let everyone in the room that someone has joined
+  io.to(assignedRoom.getRoomName()).emit('roomAssigned', assignedRoom.getRoomName());
 
   
   socket.on('disconnect', () => {
+    console.log("The user with socket id :", socket.id, "has disconnected");
 		connections.splice(connections.indexOf(socket), 1);
-		console.log("The user with socket id :", socket.id, "has disconnected");
+    serverRoomManager.removeFromRoom(socket);
 	});
 
 });
