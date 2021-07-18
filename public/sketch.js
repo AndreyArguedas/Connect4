@@ -1,12 +1,11 @@
 let gameSettings
 
-//let piece = new Piece(xwidth / 2, yheight / 2, diameter, { r: 250, g: 250, b: 10 })
+let piece = null
 
 let platform = null
 
-//let player = null;
+let player = null
 
-//let player2 = new Player(1, { r: 250, g: 10, b: 10 }, false, [])
 
 //let currentPlayer = null
 
@@ -15,21 +14,27 @@ function setup() {
 
   socket.on("roomAssigned", args => {
     console.log("Your room is" , args, "and someone has been added to this room")
-
-    //Assign the game settings coming from the server
-    gameSettings = args.settings
-
-    //Assign the platform coming form the server
-    platform = args.platform
     
-    let canv = createCanvas(gameSettings.xwidth, gameSettings.yheight)
+    if(socket.id === args.player.id) {
+      
+      //Assign the player server data to the client
+      player = args.player
 
-    canv.position(gameSettings.xCanvaPosition, gameSettings.yCanvaPosition)
+      //Assign the game settings coming from the server
+      gameSettings = args.settings
+
+      //Assign the platform coming form the server
+      platform = args.platform
+    
+      let canv = createCanvas(gameSettings.xwidth, gameSettings.yheight)
+
+      canv.position(gameSettings.xCanvaPosition, gameSettings.yCanvaPosition)
+
+      givePieces(player, gameSettings.rows * gameSettings.cols)
+    }
+
   });
 
-  //player = new Player(socket.id, { r: 250, g: 250, b: 10 }, false, [])
-  
-  //givePieces(player, rows * cols)
 
   //socket.emit('playerReady',data);
 
@@ -39,24 +44,24 @@ function setup() {
 
 function draw() {
   background(0, 0, 255)
-  showPlatform(platform)
-  //platform.show()
-  //currentPlayer = defineCurrentPlayer(player1, player2)
-  //piece = currentPlayer.getCurrentPiece()
-  //piece.show()
-  //textSize(32)
-  //text('Player' + currentPlayer.id, 10, 30)
+  if(platform && gameSettings && player) {
+    showPlatform(platform)
+    piece = player.pieces.slice(-1).pop()
+    piece.show()
+    textSize(gameSettings.textSize)
+    text('Player: ' + player.id, 10, 30)
+    movementOfPiece(piece)
+  }
+  
   //movementOfPiece(piece)
 }
 
 let showPlatform = (gamePlatform) => {
-  if(gamePlatform) {
     gamePlatform.platform.forEach((row, i) =>
       row.forEach((piece, j) =>
         piece === null ? showEmptySpace(gamePlatform, i, j) : piece.show()
       )
     )
-  }
 }
     
 
@@ -73,7 +78,7 @@ let showEmptySpace = (gamePlatform, row, col) => {
 
 let givePieces = (player, amount) => {
   let range = [...Array(amount).keys()]
-  player.pieces = range.map(e => new Piece(width / 2, height / 2, diameter, player.color))
+  player.pieces = range.map(e => new Piece(gameSettings.width / 2, gameSettings.height / 2, gameSettings.diameter, player.color))
 }
 
 let defineCurrentPlayer = (p1, p2) => {

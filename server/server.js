@@ -39,7 +39,7 @@ io.on("connection", (socket) => {
   socket.join(assignedRoom.getRoomName());
 
   //Let everyone in the room that someone has joined
-  io.to(assignedRoom.getRoomName()).emit('roomAssigned', {roomName : assignedRoom.getRoomName(), platform : assignedRoom.getPlatform(), settings : GameSettings});
+  io.to(assignedRoom.getRoomName()).emit('roomAssigned', {roomName : assignedRoom.getRoomName(), platform : assignedRoom.getPlatform(), player : assignedRoom.getPlayer(socket.id), settings : GameSettings});
 
   
   socket.on('disconnect', () => {
