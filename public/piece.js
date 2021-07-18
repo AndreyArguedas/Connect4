@@ -5,10 +5,4 @@ class Piece {
     this.y = y
     this.diameter = diameter
   }
-
-  show() {
-    let actualColor = this.color
-    fill(actualColor.r, actualColor.g, actualColor.b)
-    circle(this.x, this.y, this.diameter)
-  }
 }

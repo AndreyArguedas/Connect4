@@ -6,17 +6,16 @@ let platform = null
 
 let player = null
 
-
-//let currentPlayer = null
+let socket = null
 
 function setup() {
-  let socket = io.connect()
+  socket = io.connect()
 
   socket.on("roomAssigned", args => {
     console.log("Your room is" , args, "and someone has been added to this room")
     
     if(socket.id === args.player.id) {
-      
+
       //Assign the player server data to the client
       player = args.player
 
@@ -35,10 +34,16 @@ function setup() {
 
   });
 
+  socket.on("gameUpdated", args => {
 
-  //socket.emit('playerReady',data);
+    console.log("The game has been updated")
 
-  //Starts the game
+    //We update the platform to reflect the changes
+    platform = args.platform
+
+    player.hasTurn = !player.hasTurn
+
+  });
   
 }
 
@@ -47,21 +52,25 @@ function draw() {
   if(platform && gameSettings && player) {
     showPlatform(platform)
     piece = player.pieces.slice(-1).pop()
-    piece.show()
+    showPiece(piece)
     textSize(gameSettings.textSize)
     text('Player: ' + player.id, 10, 30)
     movementOfPiece(piece)
   }
-  
-  //movementOfPiece(piece)
 }
 
 let showPlatform = (gamePlatform) => {
     gamePlatform.platform.forEach((row, i) =>
       row.forEach((piece, j) =>
-        piece === null ? showEmptySpace(gamePlatform, i, j) : piece.show()
+        piece === null ? showEmptySpace(gamePlatform, i, j) : showPiece(piece)
       )
     )
+}
+
+let showPiece = (piece) => {
+    let actualColor = piece.color
+    fill(actualColor.r, actualColor.g, actualColor.b)
+    circle(piece.x, piece.y, piece.diameter)
 }
     
 
@@ -91,18 +100,20 @@ let movementOfPiece = p => {
 }
 
 let putPieceOnPlatfrom = (piece, platform) => {
-  let mapX = map(piece.x, 0, width, 0, rows)
-  let mapY = map(piece.y, 0, height, 0, cols)
-  if ((floor(mapY) === rows - 1 && floor(mapX) === cols - 1) || platform.existsNeighborAtBottom(floor(mapX), floor(mapY)) && platform.isSpaceEmpty(floor(mapX), floor(mapY))) {
-    platform.platform[floor(mapX)][floor(mapY)] = new Piece(piece.x, piece.y, piece.diameter, piece.color)
-    currentPlayer.hasTurn = false
-    if(currentPlayer === player2){
-      player1.hasTurn = true
-    }
+  let mapX = floor(map(piece.x, 0, gameSettings.xwidth, 0, gameSettings.rows))
+  let mapY = floor(map(piece.y, 0, gameSettings.yheight, 0, gameSettings.cols))
+
+  /* 
+    We send to the server the position where we want to put a piece,
+    If it is possible the server will put the piece in the platform,
+    if not nothing will happen, also the server will change the turns if it has to
+  */
+
+  if(Math.sign(mapX) > -1 && Math.sign(mapY) > -1 && mapY <= gameSettings.rows - 1 && mapX <= gameSettings.cols - 1 && player.hasTurn) {
+    socket.emit('putPiece', {pieceToInsert : piece, row : mapX, col : mapY})
   }
-  
 }
 
 function mouseClicked() {
-  //putPieceOnPlatfrom(piece, platform)
+  putPieceOnPlatfrom(piece, platform)
 }

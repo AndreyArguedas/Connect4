@@ -38,9 +38,21 @@ io.on("connection", (socket) => {
   // Add the socket to the room
   socket.join(assignedRoom.getRoomName());
 
-  //Let everyone in the room that someone has joined
+  //Let everyone in the room know that someone has joined
   io.to(assignedRoom.getRoomName()).emit('roomAssigned', {roomName : assignedRoom.getRoomName(), platform : assignedRoom.getPlatform(), player : assignedRoom.getPlayer(socket.id), settings : GameSettings});
 
+  socket.on('putPiece', data => {
+		let platform = assignedRoom.getPlatform()
+    let pieceToInsert = data.pieceToInsert
+    let row = data.row
+    let col = data.col
+    if (platform.existsNeighborAtBottom(row, col) && platform.isSpaceEmpty(row, col)) {
+      platform.platform[row][col] = pieceToInsert
+      assignedRoom.players.forEach( player => player.hasTurn = player.id !== socket.id )
+      //Let everyone in the room know that the platform has change
+      io.to(assignedRoom.getRoomName()).emit('gameUpdated', {roomName : assignedRoom.getRoomName(), platform : assignedRoom.getPlatform()})
+    }
+	});
   
   socket.on('disconnect', () => {
     console.log("The user with socket id :", socket.id, "has disconnected");
