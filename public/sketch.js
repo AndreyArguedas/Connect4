@@ -1,31 +1,37 @@
-const diameter = 50
-const xwidth = 600
-const yheight = 600
-const rows = 7
-const cols = 7
-const platforMargin = 1.7
+let gameSettings
 
-let piece = new Piece(xwidth / 2, yheight / 2, diameter, { r: 250, g: 250, b: 10 })
+//let piece = new Piece(xwidth / 2, yheight / 2, diameter, { r: 250, g: 250, b: 10 })
 
-let platform = new Platform(rows, cols, 0, 0, diameter, { r: 0, g: 0, b: 0 }, platforMargin)
+let platform = null
 
-let player1 = new Player(0, { r: 250, g: 250, b: 10 }, true, [])
+//let player = null;
 
-let player2 = new Player(1, { r: 250, g: 10, b: 10 }, false, [])
+//let player2 = new Player(1, { r: 250, g: 10, b: 10 }, false, [])
 
-let currentPlayer = null
+//let currentPlayer = null
 
 function setup() {
-  let socket = io.connect();
+  let socket = io.connect()
 
-  socket.on("roomAssigned", (...args) => {
-    console.log("Your room is" , args, "and someone has been added to this room");
+  socket.on("roomAssigned", args => {
+    console.log("Your room is" , args, "and someone has been added to this room")
+
+    //Assign the game settings coming from the server
+    gameSettings = args.settings
+
+    //Assign the platform coming form the server
+    platform = args.platform
+    
+    let canv = createCanvas(gameSettings.xwidth, gameSettings.yheight)
+
+    canv.position(gameSettings.xCanvaPosition, gameSettings.yCanvaPosition)
   });
 
-  let canv = createCanvas(xwidth, yheight)
-  canv.position(300, 100)
-  givePieces(player1, rows * cols)
-  //givePieces(player2, rows * cols)
+  //player = new Player(socket.id, { r: 250, g: 250, b: 10 }, false, [])
+  
+  //givePieces(player, rows * cols)
+
+  //socket.emit('playerReady',data);
 
   //Starts the game
   
@@ -33,14 +39,37 @@ function setup() {
 
 function draw() {
   background(0, 0, 255)
-  platform.show()
-  currentPlayer = defineCurrentPlayer(player1, player2)
-  piece = currentPlayer.getCurrentPiece()
-  piece.show()
-  textSize(32)
-  text('Player' + currentPlayer.id, 10, 30)
-  movementOfPiece(piece)
+  showPlatform(platform)
+  //platform.show()
+  //currentPlayer = defineCurrentPlayer(player1, player2)
+  //piece = currentPlayer.getCurrentPiece()
+  //piece.show()
+  //textSize(32)
+  //text('Player' + currentPlayer.id, 10, 30)
+  //movementOfPiece(piece)
 }
+
+let showPlatform = (gamePlatform) => {
+  if(gamePlatform) {
+    gamePlatform.platform.forEach((row, i) =>
+      row.forEach((piece, j) =>
+        piece === null ? showEmptySpace(gamePlatform, i, j) : piece.show()
+      )
+    )
+  }
+}
+    
+
+let showEmptySpace = (gamePlatform, row, col) => {
+    let { r, g, b } = gamePlatform.color
+    fill(255) //Change
+    stroke(r, g, b)
+    circle(
+      row * gamePlatform.dimension * gamePlatform.margin + gamePlatform.dimension,
+      col * gamePlatform.dimension * gamePlatform.margin + gamePlatform.dimension,
+      gamePlatform.dimension
+    )
+  }
 
 let givePieces = (player, amount) => {
   let range = [...Array(amount).keys()]
@@ -70,5 +99,5 @@ let putPieceOnPlatfrom = (piece, platform) => {
 }
 
 function mouseClicked() {
-  putPieceOnPlatfrom(piece, platform)
+  //putPieceOnPlatfrom(piece, platform)
 }
