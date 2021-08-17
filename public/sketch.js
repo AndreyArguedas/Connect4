@@ -8,6 +8,10 @@ let player = null
 
 let socket = null
 
+let currentRoom = null
+
+let players = null
+
 function setup() {
   socket = io.connect()
 
@@ -24,6 +28,12 @@ function setup() {
 
       //Assign the platform coming form the server
       platform = args.platform
+      
+      //Current Room, this can change if the rival disconnects
+      currentRoom = args.roomName
+
+      //Players across all rooms
+      players = args.connectedPlayers
     
       let canv = createCanvas(gameSettings.xwidth, gameSettings.yheight)
 
@@ -55,6 +65,8 @@ function draw() {
     showPiece(piece)
     textSize(gameSettings.textSize)
     text('Player: ' + player.id, 10, 30)
+    text(currentRoom, 10, height - 10)
+    text('Players:' + players, 400, height - 10)
     movementOfPiece(piece)
   }
 }

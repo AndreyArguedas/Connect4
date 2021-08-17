@@ -31,11 +31,10 @@ class RoomData {
             // This player will not have the first turn since entered last to the room
             this.players.push(new Player(client.id, GameSettings.redColor, false))
         }
-        
     }
 
-    getPlayer(clientId) {
-        return this.players.filter( player => player.id ===  clientId).pop()
+    getPlayer(client) {
+        return this.players.filter( player => player.id ===  client.id).pop()
     }
 
     getClients() {

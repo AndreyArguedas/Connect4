@@ -25,6 +25,7 @@ class RoomManager {
         let rooms = this.rooms.filter( room => room.clients.includes(client))
         if(rooms.length == 1){
             let roomToDeleteClient = rooms.shift()
+            roomToDeleteClient.players.splice(roomToDeleteClient.players.indexOf(roomToDeleteClient.getPlayer(client)), 1)
             roomToDeleteClient.clients.splice(roomToDeleteClient.clients.indexOf(client), 1)
             console.log("Final Rooms", this.rooms)
         }
