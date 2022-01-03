@@ -53,6 +53,9 @@ function setup() {
 
     player.hasTurn = !player.hasTurn
 
+    //Players across all rooms
+    players = args.connectedPlayers
+
   });
   
 }

@@ -26,7 +26,7 @@ let connections = [];
 let serverRoomManager  = new RoomManager();
 
 io.on("connection", (socket) => {
-  console.log("Welcome welcome, someone has entered the server");
+  console.log("Welcome welcome, someone has entered the server!!!");
 
   console.log("Socket id :", socket.id, "has entered");
 
@@ -50,7 +50,7 @@ io.on("connection", (socket) => {
       platform.platform[row][col] = pieceToInsert
       assignedRoom.players.forEach( player => player.hasTurn = player.id !== socket.id )
       //Let everyone in the room know that the platform has change
-      io.to(assignedRoom.getRoomName()).emit('gameUpdated', {roomName : assignedRoom.getRoomName(), platform : assignedRoom.getPlatform()})
+      io.to(assignedRoom.getRoomName()).emit('gameUpdated', {roomName : assignedRoom.getRoomName(), platform : assignedRoom.getPlatform(), connectedPlayers : connections.length})
     }
 	});
   
