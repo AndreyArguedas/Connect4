@@ -35,9 +35,7 @@ function setup() {
       //Players across all rooms
       players = args.connectedPlayers
     
-      let canv = createCanvas(gameSettings.xwidth, gameSettings.yheight)
-
-      canv.position(gameSettings.xCanvaPosition, gameSettings.yCanvaPosition)
+      createCanvas(gameSettings.xwidth, gameSettings.yheight)
 
       givePieces(player, gameSettings.rows * gameSettings.cols)
     }
