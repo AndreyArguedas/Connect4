@@ -1,6 +1,7 @@
 const GameSettings = require("./settings")
 let Platform = require("../model/platform")
 let Player = require("../model/player")
+let GameManager = require("../model/gameManager")
 
 
 class RoomData {
@@ -11,6 +12,7 @@ class RoomData {
         // Players is the arrat with the abstracion of a player in the game
         this.players = []
         this.platform = new Platform(GameSettings.rows, GameSettings.cols, 0,  0, GameSettings.diameter, { r: 255, g: 255, b: 255 }, GameSettings.platforMargin)
+        this.gameManager = new GameManager(this.platform.platform)
     }
 
     getPlatform() {
@@ -19,6 +21,10 @@ class RoomData {
 
     getRoomName() {
         return this.roomName
+    }
+
+    getGameManager() {
+        return this.gameManager
     }
 
     addClient(client) {

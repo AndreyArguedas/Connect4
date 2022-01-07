@@ -115,6 +115,7 @@ let movementOfPiece = p => {
 let putPieceOnPlatfrom = (piece, platform) => {
   let mapX = floor(map(piece.x, 0, gameSettings.xwidth, 0, gameSettings.rows))
   let mapY = floor(map(piece.y, 0, gameSettings.yheight, 0, gameSettings.cols))
+  console.log(mapX, mapY)
 
   /* 
     We send to the server the position where we want to put a piece,
@@ -123,7 +124,7 @@ let putPieceOnPlatfrom = (piece, platform) => {
   */
 
   if(Math.sign(mapX) > -1 && Math.sign(mapY) > -1 && mapY <= gameSettings.rows - 1 && mapX <= gameSettings.cols - 1 && player.hasTurn) {
-    socket.emit('putPiece', {pieceToInsert : piece, row : mapX, col : mapY})
+    socket.emit('putPiece', {pieceToInsert : piece, row : mapY, col : mapX})
   }
 }
 

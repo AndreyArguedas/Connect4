@@ -39,8 +39,8 @@ io.on("connection", (socket) => {
   socket.join(assignedRoom.getRoomName());
 
   //Let everyone in the room know that someone has joined
-  io.to(assignedRoom.getRoomName()).emit('roomAssigned', {roomName : assignedRoom.getRoomName(), platform : assignedRoom.getPlatform(), player : assignedRoom.getPlayer(socket), settings : GameSettings, connectedPlayers : connections.length});
-
+  io.to(assignedRoom.getRoomName()).emit('roomAssigned', {roomName : assignedRoom.getRoomName(), platform : assignedRoom.getPlatform(), player : assignedRoom.getPlayer(socket), settings : GameSettings, connectedPlayers : connections.length})
+  
   socket.on('putPiece', data => {
 		let platform = assignedRoom.getPlatform()
     let pieceToInsert = data.pieceToInsert
@@ -51,6 +51,8 @@ io.on("connection", (socket) => {
       assignedRoom.players.forEach( player => player.hasTurn = player.id !== socket.id )
       //Let everyone in the room know that the platform has change
       io.to(assignedRoom.getRoomName()).emit('gameUpdated', {roomName : assignedRoom.getRoomName(), platform : assignedRoom.getPlatform(), connectedPlayers : connections.length})
+      console.log("Game Managment", row, col)
+      assignedRoom.getGameManager().isGameFinished(row, col)
     }
 	});
   
