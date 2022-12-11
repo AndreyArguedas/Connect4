@@ -16,7 +16,7 @@
     "game"
   ],
   "dependencies": {
-    "express": "^4.14.1"
+    "express": "^4.17.3"
   },
   "author": "Andrey Arguedas",
   "license": "ISC",
